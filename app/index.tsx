@@ -1,5 +1,6 @@
 import { Text, View, StyleSheet } from "react-native";
 import { Image } from "expo-image";
+import "./global.css";
 
 export default function Index() {
   const blurhash =
@@ -19,7 +20,11 @@ export default function Index() {
         contentFit="cover"
         transition={1000}
       />
-      <Text>Hello</Text>
+      <View className="bg-stone-300 ">
+        <Text className="text-xl font-bold text-blue-500">
+          Welcome to Nativewind!
+        </Text>
+      </View>
     </View>
   );
 }
