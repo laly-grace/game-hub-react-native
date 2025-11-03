@@ -19,6 +19,7 @@ export default function Index() {
         contentFit="cover"
         transition={1000}
       />
+      <Text>Hello</Text>
     </View>
   );
 }
@@ -32,6 +33,8 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 1,
+    position: "absolute",
+    height: "100%",
     width: "100%",
     backgroundColor: "#0553",
   },
