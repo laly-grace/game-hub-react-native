@@ -10,23 +10,15 @@ import { Image } from "expo-image";
 import "./global.css";
 import { StatusBar } from "expo-status-bar";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { router } from "expo-router";
 
 export default function Index() {
-  const blurhash =
-    "|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[";
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
+    <View className="flex-1 justify-center items-center">
       <StatusBar style="light" />
       <Image
         style={styles.image}
         source={require("../assets/images/authBack.jpg")}
-        placeholder={{ blurhash }}
         contentFit="cover"
         transition={1000}
         blurRadius={50}
@@ -98,7 +90,10 @@ export default function Index() {
               </View>
 
               {/* Submit Button */}
-              <TouchableOpacity className="mt-8 flex w-full justify-center rounded-md bg-indigo-500 px-3 py-2">
+              <TouchableOpacity
+                onPress={() => router.push("/game")}
+                className="mt-8 flex w-full justify-center rounded-md bg-indigo-500 px-3 py-2"
+              >
                 <Text className="text-center text-sm font-semibold text-white">
                   Login
                 </Text>
