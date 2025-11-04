@@ -1,6 +1,7 @@
 import { Image } from "expo-image";
-import { StyleSheet, View, Text } from "react-native";
-import { Picker } from "@react-native-picker/picker";
+import { StyleSheet, View, Text, ScrollView } from "react-native";
+import DropdownComponent from "@/components/DropdownComponent";
+import GameCard from "@/components/GameCard";
 
 export default function Home() {
   return (
@@ -9,12 +10,15 @@ export default function Home() {
         <Text className="text-4xl font-bold">New and Trending</Text>
         <Text className="text-sm">Based on player counts and release date</Text>
       </View>
-      <View>
-        <Picker>
-          <Picker.Item label="Java" value="java" />
-          <Picker.Item label="JavaScript" value="js" />
-        </Picker>
+      <View className="flex-row  ">
+        <DropdownComponent />
+        <DropdownComponent />
       </View>
+      <ScrollView contentContainerStyle={{ gap: 15, paddingHorizontal: 5 }}>
+        <GameCard />
+        <GameCard />
+        <GameCard />
+      </ScrollView>
     </View>
   );
 }

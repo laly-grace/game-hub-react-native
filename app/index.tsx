@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { Image } from "expo-image";
-import "./global.css";
 import { StatusBar } from "expo-status-bar";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { router } from "expo-router";
