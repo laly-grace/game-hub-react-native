@@ -7,6 +7,7 @@ import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import GameModal from "@/components/GenreModal";
 import { useState } from "react";
 import GameScroll from "@/components/GameScroll";
+import GameFilter from "@/components/GameFilter";
 
 export default function Home() {
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
@@ -23,13 +24,13 @@ export default function Home() {
           Based on player counts and release date
         </Text>
       </View>
-      <View className="flex-row  ">
-        <DropdownComponent />
-        <DropdownComponent />
+      <View>
+        <GameFilter />
       </View>
       <Pressable
         onPress={() => setIsModalVisible(!isModalVisible)}
-        className="w-40 h-[30] bg-gray-400 font-bold py-2 px-4 rounded-full flex-row ml-1 mb-4"
+        style={styles.modalOpen}
+        className="w-40 h-[30]  font-bold py-2 px-4 rounded-full flex-row ml-1 mb-4"
       >
         <Icon name={isModalVisible ? "chevron-up" : "chevron-down"} size={20} />
         <Text className="font-semibold text-base text-white">
@@ -50,5 +51,8 @@ const styles = StyleSheet.create({
     padding: 3,
     // alignItems: "center",
     // justifyContent: "center",
+  },
+  modalOpen: {
+    backgroundColor: "gray",
   },
 });

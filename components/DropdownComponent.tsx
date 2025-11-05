@@ -2,18 +2,30 @@ import React, { useState } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import { Platform } from "@/hooks/useGames";
 
-const data = [
-  { label: "Relevance", value: "1" },
-  { label: "Date Added", value: "2" },
-  { label: "Name", value: "3" },
-  { label: "Release Date", value: "4" },
-  { label: "Popularity", value: "5" },
-  { label: "Average Rating", value: "6" },
-];
+// const data = [
+//   { label: "Relevance", value: "1" },
+//   { label: "Date Added", value: "2" },
+//   { label: "Name", value: "3" },
+//   { label: "Release Date", value: "4" },
+//   { label: "Popularity", value: "5" },
+//   { label: "Average Rating", value: "6" },
+// ];
 
-const DropdownComponent = () => {
+interface Props {
+  platforms?: Platform[];
+  otherData?: any[];
+}
+
+const DropdownComponent = ({ platforms, otherData }: Props) => {
   const [value, setValue] = useState(null);
+  const data = platforms
+    ? (platforms?.map((platform) => ({
+        label: platform.name,
+        value: platform.slug,
+      })) ?? [])
+    : otherData;
 
   const renderItem = (item: { label: string; value: string }) => {
     return (
@@ -38,8 +50,7 @@ const DropdownComponent = () => {
       selectedTextStyle={styles.selectedTextStyle}
       inputSearchStyle={styles.inputSearchStyle}
       iconStyle={styles.iconStyle}
-      data={data}
-      search
+      data={data!}
       maxHeight={300}
       labelField="label"
       valueField="value"
@@ -87,6 +98,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    backgroundColor: "#B7E5CD",
   },
   textItem: {
     flex: 1,
