@@ -63,9 +63,10 @@ const styles = StyleSheet.create({
   dropdown: {
     // flex: 1,
     // margin: 16,
-    width: "50%",
-    height: 35,
-    backgroundColor: "white",
+    width: "45%",
+    margin: 4,
+    height: 30,
+    backgroundColor: "#ECEEDF",
     borderRadius: 40,
     padding: 12,
     shadowColor: "#000",

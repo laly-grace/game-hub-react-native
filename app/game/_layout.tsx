@@ -13,6 +13,7 @@ import {
 } from "@react-navigation/drawer";
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
+import { Stack } from "expo-router";
 
 export default function Layout() {
   return (
@@ -29,7 +30,7 @@ export default function Layout() {
           drawerLabel: "Home",
           title: "Games",
           headerBackground: () => (
-            <View style={StyleSheet.absoluteFill} className="bg-fuchsia-700">
+            <View style={StyleSheet.absoluteFill} className="bg-[#6C0345] ">
               {/* 🌈 Gradient overlay */}
               <LinearGradient
                 colors={["rgba(0,5,10,0.9)", "transparent"]}
