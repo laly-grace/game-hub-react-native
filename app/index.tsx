@@ -13,7 +13,7 @@ import { router } from "expo-router";
 
 export default function Index() {
   return (
-    <View className="flex-1 justify-center items-center">
+    <View style={styles.container}>
       <StatusBar style="light" />
       <Image
         style={styles.image}

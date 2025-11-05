@@ -30,7 +30,9 @@ export default function Layout() {
           drawerLabel: "Home",
           title: "Games",
           headerBackground: () => (
-            <View style={StyleSheet.absoluteFill} className="bg-[#6C0345] ">
+            <View
+              style={[StyleSheet.absoluteFill, { backgroundColor: "#6C0345" }]}
+            >
               {/* 🌈 Gradient overlay */}
               <LinearGradient
                 colors={["rgba(0,5,10,0.9)", "transparent"]}
