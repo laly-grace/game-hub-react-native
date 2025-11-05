@@ -6,6 +6,7 @@ import { router } from "expo-router";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import GameModal from "@/components/GenreModal";
 import { useState } from "react";
+import GameScroll from "@/components/GameScroll";
 
 export default function Home() {
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
@@ -28,23 +29,16 @@ export default function Home() {
       </View>
       <Pressable
         onPress={() => setIsModalVisible(!isModalVisible)}
-        className="w-40 h-[30] bg-purple-100 text-white font-bold py-2 px-4 rounded-full flex-row mb-4"
+        className="w-40 h-[30] bg-gray-400 font-bold py-2 px-4 rounded-full flex-row ml-1 mb-4"
       >
         <Icon name={isModalVisible ? "chevron-up" : "chevron-down"} size={20} />
-        <Text className="font-semibold text-base">Filter By Genres</Text>
+        <Text className="font-semibold text-base text-white">
+          Filter By Genres
+        </Text>
       </Pressable>
       <GameModal isVisible={isModalVisible} onClose={onModalClose} />
 
-      <ScrollView
-        contentContainerStyle={{ gap: 15, paddingHorizontal: 5, marginTop: 5 }}
-      >
-        <GameCard />
-        <GameCard />
-        <GameCard />
-        <GameCard />
-        <GameCard />
-        <GameCard />
-      </ScrollView>
+      <GameScroll />
     </View>
   );
 }

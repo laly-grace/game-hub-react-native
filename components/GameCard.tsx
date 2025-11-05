@@ -1,20 +1,33 @@
 import React from "react";
 import { View, Text, ImageBackground, TouchableOpacity } from "react-native";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
+import { Game } from "@/hooks/useGames";
 
-const GameCard = () => {
+interface Props {
+  game: Game;
+}
+
+const GameCard = ({ game }: Props) => {
   return (
     <TouchableOpacity>
       <View className="rounded-3xl overflow-hidden shadow-lg w-full ">
         <ImageBackground
-          source={{ uri: "https://picsum.photos/400/300" }}
+          source={{ uri: game.background_image }}
           className="w-full"
           imageStyle={{ resizeMode: "cover" }}
-          style={{ height: 300, width: "100%" }}
+          style={{ height: 250, width: "100%" }}
         >
           <View className="flex-1 bg-black/50 justify-end">
             <View className="p-3">
-              <Text className="text-xs text-white/90">07th July 1997</Text>
+              <Text className="text-xs text-white/90">
+                {game.released
+                  ? new Date(game.released).toLocaleDateString("en-US", {
+                      weekday: "short", // "Wed"
+                      day: "2-digit", // "02"
+                      year: "numeric", // "2021"
+                    })
+                  : "Unknown Date"}
+              </Text>
               <View className="flex-row">
                 <Icon name="microsoft-windows" size={20} color={"white"} />
                 <Icon name="sony-playstation" size={20} color={"white"} />
@@ -24,7 +37,7 @@ const GameCard = () => {
               </View>
               <TouchableOpacity>
                 <Text className="mt-1 text-2xl font-bold text-white">
-                  Prince of Persia: The Sands of Time Remake{" "}
+                  {game.name}
                 </Text>
               </TouchableOpacity>
               {/* <Text className="mt-2 text-sm leading-5 text-white/95">
