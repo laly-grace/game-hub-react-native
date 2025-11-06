@@ -6,12 +6,12 @@ import usePlatforms from "@/hooks/usePlatforms";
 const GameFilter = () => {
   const { data } = usePlatforms();
   const sortBy = [
-    { label: "Relevance", value: "1" },
-    { label: "Date Added", value: "2" },
-    { label: "Name", value: "3" },
-    { label: "Release Date", value: "4" },
-    { label: "Popularity", value: "5" },
-    { label: "Average Rating", value: "6" },
+    { label: "Relevance", value: "" },
+    { label: "Date added", value: "added" },
+    { label: "Name", value: "name" },
+    { label: "Release Date", value: "released" },
+    { label: "Popularity", value: "metacritic" },
+    { label: "Average Rating", value: "rating" },
   ];
   return (
     <View className="flex-row">

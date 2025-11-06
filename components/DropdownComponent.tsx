@@ -1,17 +1,9 @@
-import React, { useState } from "react";
-import { StyleSheet, View, Text } from "react-native";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, View, Text, Pressable } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { Platform } from "@/hooks/useGames";
-
-// const data = [
-//   { label: "Relevance", value: "1" },
-//   { label: "Date Added", value: "2" },
-//   { label: "Name", value: "3" },
-//   { label: "Release Date", value: "4" },
-//   { label: "Popularity", value: "5" },
-//   { label: "Average Rating", value: "6" },
-// ];
+import useGameStore from "@/store";
 
 interface Props {
   platforms?: Platform[];
@@ -19,7 +11,21 @@ interface Props {
 }
 
 const DropdownComponent = ({ platforms, otherData }: Props) => {
-  const [value, setValue] = useState(null);
+  const setSelectedPlatform = useGameStore((s) => s.setSelectedPlatform);
+  const setSortOrder = useGameStore((s) => s.setSortOrder);
+  const selectedPlatform = useGameStore((s) => s.selectedPlatform);
+  const sortOrder = useGameStore((s) => s.sortOrder);
+  const [value, setValue] = useState<string | null>(
+    selectedPlatform ? selectedPlatform.slug : (sortOrder ?? null)
+  );
+
+  useEffect(() => {
+    if (platforms) {
+      setValue(selectedPlatform ? selectedPlatform.slug : null);
+    } else {
+      setValue(sortOrder ?? null);
+    }
+  }, [selectedPlatform, sortOrder, platforms]);
   const data = platforms
     ? (platforms?.map((platform) => ({
         label: platform.name,
@@ -28,10 +34,21 @@ const DropdownComponent = ({ platforms, otherData }: Props) => {
     : otherData;
 
   const renderItem = (item: { label: string; value: string }) => {
+    const onSelect = () => {
+      const val = String(item.value);
+      setValue(val);
+      if (platforms) {
+        const found = platforms.find((p) => p.slug === val) ?? null;
+        setSelectedPlatform(found ?? undefined);
+      } else {
+        setSortOrder(val);
+      }
+    };
+
     return (
-      <View style={styles.item}>
+      <Pressable onPress={onSelect} style={styles.item}>
         <Text style={styles.textItem}>{item.label}</Text>
-        {item.value === value && (
+        {String(item.value) === value && (
           <AntDesign
             style={styles.icon}
             color="black"
@@ -39,7 +56,7 @@ const DropdownComponent = ({ platforms, otherData }: Props) => {
             size={20}
           />
         )}
-      </View>
+      </Pressable>
     );
   };
 
@@ -58,7 +75,14 @@ const DropdownComponent = ({ platforms, otherData }: Props) => {
       searchPlaceholder="Search..."
       value={value}
       onChange={(item) => {
-        setValue(item.value);
+        const val = String(item.value);
+        setValue(val);
+        if (platforms) {
+          const found = platforms.find((p) => p.slug === val) ?? null;
+          setSelectedPlatform(found ?? undefined);
+        } else {
+          setSortOrder(val);
+        }
       }}
       renderLeftIcon={() => (
         <AntDesign style={styles.icon} color="black" name="safety" size={20} />

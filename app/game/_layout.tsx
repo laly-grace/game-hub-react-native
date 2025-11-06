@@ -66,7 +66,7 @@ function CustomDrawerContent(props: any) {
         {/* 👤 Profile avatar + name */}
         <View style={styles.profileContainer}>
           <Image
-            source={{ uri: "https://randomuser.me/api/portraits/men/41.jpg" }}
+            source={{ uri: "https://randomuser.me/api/portraits/men/10.jpg" }}
             style={styles.avatar}
           />
           <Text style={styles.name}>Laly Grace</Text>

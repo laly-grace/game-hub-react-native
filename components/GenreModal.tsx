@@ -15,6 +15,7 @@ import {
   configureReanimatedLogger,
   ReanimatedLogLevel,
 } from "react-native-reanimated";
+import useGameStore from "@/store";
 
 configureReanimatedLogger({
   level: ReanimatedLogLevel.warn,
@@ -27,6 +28,9 @@ type Props = PropsWithChildren<{
 
 export default function GameModal({ isVisible, children, onClose }: Props) {
   const { data } = useGenres();
+  const setSelectedGenre = useGameStore((s) => s.setSelectedGenre);
+  const setIsModalVisible = useGameStore((s) => s.setIsModalVisible);
+
   return (
     <View>
       <Modal animationType="slide" transparent={true} visible={isVisible}>
@@ -42,6 +46,10 @@ export default function GameModal({ isVisible, children, onClose }: Props) {
               <View className="flex flex-col gap-1 py-1.5">
                 {data?.results.map((item) => (
                   <TouchableOpacity
+                    onPress={() => {
+                      setSelectedGenre(item);
+                      setIsModalVisible(false);
+                    }}
                     key={item.id}
                     activeOpacity={0.7}
                     className="flex w-full flex-row items-center p-3 rounded-md transition-colors

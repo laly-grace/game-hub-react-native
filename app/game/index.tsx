@@ -8,17 +8,30 @@ import GameModal from "@/components/GenreModal";
 import { useState } from "react";
 import GameScroll from "@/components/GameScroll";
 import GameFilter from "@/components/GameFilter";
+import useGameStore from "@/store";
 
 export default function Home() {
-  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  // const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const onModalClose = () => {
     setIsModalVisible(false);
   };
+  const setIsModalVisible = useGameStore((s) => s.setIsModalVisible);
+  const isModalVisible = useGameStore((s) => s.isModalVisible);
+
+  const selectedGenre = useGameStore((s) => s.selectedGenre);
+  const selectedPlatform = useGameStore((s) => s.selectedPlatform);
+
   return (
     <View style={styles.container}>
       <View className="p-1">
         <Text className="text-4xl font-bold text-purple-100">
-          New and Trending
+          {selectedGenre != null || selectedPlatform != null ? (
+            <Text style={{ textTransform: "capitalize" }}>
+              {selectedGenre?.name} {selectedPlatform?.name} Games
+            </Text>
+          ) : (
+            <>New and trending</>
+          )}
         </Text>
         <Text className="text-sm text-white">
           Based on player counts and release date

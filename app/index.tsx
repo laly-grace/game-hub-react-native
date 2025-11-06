@@ -26,10 +26,7 @@ export default function Index() {
         Welcome to Game Hub
       </Text>
       <View className="flex w-10/12 absolute top-44">
-        <ScrollView
-          contentContainerStyle={{ flexGrow: 1 }}
-          className="flex bg-white/9 backdrop-blur-md border border-white/20 rounded-xl  p-10"
-        >
+        <View className="flex bg-white/9 backdrop-blur-md border border-white/20 rounded-xl  p-10">
           <View className="flex-1 justify-center ">
             <View className="w-full ">
               {/* <Image
@@ -107,7 +104,7 @@ export default function Index() {
               </Text>
             </View>
           </View>
-        </ScrollView>
+        </View>
       </View>
     </View>
   );
