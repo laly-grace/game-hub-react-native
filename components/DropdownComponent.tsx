@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { StyleSheet, View, Text, Pressable } from "react-native";
+import React, { useEffect, useState, useRef } from "react";
+import { StyleSheet, View, Text, Pressable, Animated } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
-import AntDesign from "@expo/vector-icons/AntDesign";
+import { Ionicons } from "@expo/vector-icons";
 import { Platform } from "@/hooks/useGames";
 import useGameStore from "@/store";
 
@@ -33,6 +33,27 @@ const DropdownComponent = ({ platforms, otherData }: Props) => {
       })) ?? [])
     : otherData;
 
+  const caretAnim = useRef(new Animated.Value(0)).current;
+  const spin = caretAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["0deg", "180deg"],
+  });
+
+  const handleFocus = () => {
+    Animated.timing(caretAnim, {
+      toValue: 1,
+      duration: 250,
+      useNativeDriver: true,
+    }).start();
+  };
+  const handleBlur = () => {
+    Animated.timing(caretAnim, {
+      toValue: 0,
+      duration: 250,
+      useNativeDriver: true,
+    }).start();
+  };
+
   const renderItem = (item: { label: string; value: string }) => {
     const onSelect = () => {
       const val = String(item.value);
@@ -46,13 +67,18 @@ const DropdownComponent = ({ platforms, otherData }: Props) => {
     };
 
     return (
-      <Pressable onPress={onSelect} style={styles.item}>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityState={{ selected: String(item.value) === value }}
+        onPress={onSelect}
+        style={[styles.item, String(item.value) === value && styles.itemActive]}
+      >
         <Text style={styles.textItem}>{item.label}</Text>
         {String(item.value) === value && (
-          <AntDesign
-            style={styles.icon}
-            color="black"
-            name="safety"
+          <Ionicons
+            style={styles.trailingIcon}
+            color="#7c3aed"
+            name="checkmark-circle-outline"
             size={20}
           />
         )}
@@ -61,85 +87,135 @@ const DropdownComponent = ({ platforms, otherData }: Props) => {
   };
 
   return (
-    <Dropdown
-      style={styles.dropdown}
-      placeholderStyle={styles.placeholderStyle}
-      selectedTextStyle={styles.selectedTextStyle}
-      inputSearchStyle={styles.inputSearchStyle}
-      iconStyle={styles.iconStyle}
-      data={data!}
-      maxHeight={300}
-      labelField="label"
-      valueField="value"
-      placeholder="Select item"
-      searchPlaceholder="Search..."
-      value={value}
-      onChange={(item) => {
-        const val = String(item.value);
-        setValue(val);
-        if (platforms) {
-          const found = platforms.find((p) => p.slug === val) ?? null;
-          setSelectedPlatform(found ?? undefined);
-        } else {
-          setSortOrder(val);
-        }
-      }}
-      renderLeftIcon={() => (
-        <AntDesign style={styles.icon} color="black" name="safety" size={20} />
-      )}
-      renderItem={renderItem}
-    />
+    <View style={styles.wrapper}>
+      <Dropdown
+        style={styles.dropdown}
+        placeholderStyle={styles.placeholderStyle}
+        selectedTextStyle={styles.selectedTextStyle}
+        inputSearchStyle={styles.inputSearchStyle}
+        iconStyle={styles.iconStyle}
+        containerStyle={styles.dropdownContainer}
+        itemContainerStyle={styles.itemContainer}
+        activeColor="rgba(124,58,237,0.08)"
+        data={data!}
+        maxHeight={300}
+        labelField="label"
+        valueField="value"
+        placeholder="Select"
+        searchPlaceholder="Search..."
+        value={value}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+        onChange={(item) => {
+          const val = String(item.value);
+          setValue(val);
+          if (platforms) {
+            const found = platforms.find((p) => p.slug === val) ?? null;
+            setSelectedPlatform(found ?? undefined);
+          } else {
+            setSortOrder(val);
+          }
+        }}
+        renderLeftIcon={() => (
+          <View style={styles.leftIconWrap}>
+            <Ionicons
+              style={styles.leftIcon}
+              color="#94a3b8"
+              name={platforms ? "hardware-chip-outline" : "options-outline"}
+              size={18}
+            />
+          </View>
+        )}
+        renderRightIcon={() => (
+          <Animated.View style={{ transform: [{ rotate: spin }] }}>
+            <Ionicons name="chevron-down-outline" size={18} color="#cbd5e1" />
+          </Animated.View>
+        )}
+        renderItem={renderItem}
+      />
+    </View>
   );
 };
 
 export default DropdownComponent;
 
 const styles = StyleSheet.create({
-  dropdown: {
-    // flex: 1,
-    // margin: 16,
-    width: "45%",
-    margin: 4,
-    height: 30,
-    backgroundColor: "#ECEEDF",
-    borderRadius: 40,
-    padding: 12,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 1.41,
-
-    // elevation: 2,
+  wrapper: {
+    width: "48%",
+    marginVertical: 6,
   },
-  icon: {
-    marginRight: 5,
+  dropdown: {
+    height: 46,
+    borderRadius: 14,
+    paddingHorizontal: 14,
+    backgroundColor: "rgba(15,23,42,0.55)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.08)",
+    shadowColor: "#0f172a",
+    shadowOpacity: 0.35,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 4 },
+    backdropFilter: "blur(12px)", // web only
+  },
+  dropdownContainer: {
+    borderRadius: 16,
+    paddingVertical: 6,
+    backgroundColor: "rgba(15,23,42,0.92)",
+    borderWidth: 1,
+    borderColor: "rgba(124,58,237,0.25)",
+  },
+  itemContainer: {
+    borderRadius: 10,
+    overflow: "hidden",
   },
   item: {
-    padding: 17,
+    paddingVertical: 12,
+    paddingHorizontal: 14,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: "#B7E5CD",
+    backgroundColor: "transparent",
+  },
+  itemActive: {
+    backgroundColor: "rgba(124,58,237,0.12)",
   },
   textItem: {
     flex: 1,
-    fontSize: 16,
+    fontSize: 14,
+    color: "#e2e8f0",
+    fontWeight: "500",
   },
   placeholderStyle: {
-    fontSize: 16,
+    fontSize: 14,
+    color: "#64748b",
+    fontWeight: "500",
   },
   selectedTextStyle: {
-    fontSize: 16,
+    fontSize: 14,
+    color: "#f1f5f9",
+    fontWeight: "600",
   },
   iconStyle: {
-    width: 20,
-    height: 20,
+    width: 22,
+    height: 22,
   },
   inputSearchStyle: {
     height: 40,
-    fontSize: 16,
+    fontSize: 14,
+    color: "#f1f5f9",
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    backgroundColor: "rgba(255,255,255,0.06)",
+  },
+  leftIconWrap: {
+    marginRight: 6,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  leftIcon: {
+    opacity: 0.9,
+  },
+  trailingIcon: {
+    marginLeft: 8,
   },
 });

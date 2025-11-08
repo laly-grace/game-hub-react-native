@@ -8,15 +8,19 @@ import {
   Image,
   Animated,
   Pressable,
+  Platform,
 } from "react-native";
 import {
   DrawerContentScrollView,
   DrawerItemList,
+  DrawerToggleButton,
 } from "@react-navigation/drawer";
 import { Ionicons } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { Stack } from "expo-router";
+import Sidebar from "../../components/Sidebar";
+import AppHeader from "../../components/AppHeader";
 
 export default function Layout() {
   const headerFade = useRef(new Animated.Value(0)).current;
@@ -27,6 +31,7 @@ export default function Layout() {
       useNativeDriver: true,
     }).start();
   }, [headerFade]);
+
   return (
     <Drawer
       drawerContent={(props) => <CustomDrawerContent {...props} />}
@@ -34,15 +39,24 @@ export default function Layout() {
         headerTintColor: "#fff",
         headerTitleStyle: { fontWeight: "700" },
         headerStyle: { backgroundColor: "transparent" },
-        drawerStyle: { backgroundColor: "transparent" },
-        // sceneContainerStyle: { backgroundColor: "transparent" },
+        drawerType: Platform.OS === "web" ? "permanent" : "front",
+        drawerStyle: {
+          backgroundColor: "transparent",
+          width: 300,
+        },
       }}
     >
       <Drawer.Screen
         name="index"
-        options={{
+        options={({ navigation }) => ({
           drawerLabel: "Home",
           title: "Games",
+          header: () => (
+            <AppHeader
+              title="Games"
+              onToggleMenu={() => navigation.toggleDrawer()}
+            />
+          ),
           headerBackground: () => (
             <Animated.View
               style={[StyleSheet.absoluteFill, { opacity: headerFade }]}
@@ -61,39 +75,14 @@ export default function Layout() {
             </Animated.View>
           ),
           headerTitleAlign: "center",
-          headerTitleStyle: { fontSize: 18, fontWeight: "700", color: "#fff" },
-          headerRight: () => (
-            <View style={styles.headerActions}>
-              <Pressable
-                style={styles.iconButton}
-                onPress={() => {
-                  /* TODO: open search */
-                }}
-              >
-                <Ionicons name="search-outline" size={18} color="#e6eef8" />
-              </Pressable>
-              <Pressable
-                style={styles.avatarBtn}
-                onPress={() => {
-                  /* TODO: open profile */
-                }}
-              >
-                <Image
-                  source={{
-                    uri: "https://randomuser.me/api/portraits/men/10.jpg",
-                  }}
-                  style={styles.headerAvatar}
-                />
-              </Pressable>
-            </View>
-          ),
-        }}
+        })}
       />
     </Drawer>
   );
 }
 
 function CustomDrawerContent(props: any) {
+  // subtle drifting background shapes to give the drawer a rich, layered look
   const itemsFade = useRef(new Animated.Value(0)).current;
   useEffect(() => {
     Animated.timing(itemsFade, {
@@ -103,6 +92,24 @@ function CustomDrawerContent(props: any) {
       useNativeDriver: true,
     }).start();
   }, [itemsFade]);
+
+  const circleAnim = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(circleAnim, {
+          toValue: 1,
+          duration: 6000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(circleAnim, {
+          toValue: 0,
+          duration: 6000,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+  }, [circleAnim]);
 
   const ITEM_H = 52;
   const activeY = useRef(
@@ -130,9 +137,75 @@ function CustomDrawerContent(props: any) {
   return (
     <DrawerContentScrollView
       {...props}
+      style={{ flex: 1 }}
       contentContainerStyle={styles.drawerContent}
     >
-      <Animated.View style={[styles.headerWrap, { opacity: itemsFade }]}>
+      {/* Layered animated background behind drawer content */}
+      <Animated.View
+        pointerEvents="none"
+        style={[StyleSheet.absoluteFill, styles.drawerBg]}
+      >
+        <LinearGradient
+          colors={["#071023", "#081226"]}
+          start={[0, 0]}
+          end={[1, 1]}
+          style={StyleSheet.absoluteFill}
+        />
+
+        <Animated.View
+          style={[
+            styles.bgCircleOne,
+            {
+              transform: [
+                {
+                  translateX: circleAnim.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [-20, 20],
+                  }),
+                },
+                {
+                  translateY: circleAnim.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [-8, 8],
+                  }),
+                },
+              ],
+              opacity: 0.9,
+            },
+          ]}
+        />
+
+        <Animated.View
+          style={[
+            styles.bgCircleTwo,
+            {
+              transform: [
+                {
+                  translateX: circleAnim.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [18, -18],
+                  }),
+                },
+                {
+                  translateY: circleAnim.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [6, -6],
+                  }),
+                },
+              ],
+            },
+          ]}
+        />
+
+        {/* soft overlay to add depth and subtle texture */}
+        <LinearGradient
+          colors={["rgba(255,255,255,0.02)", "rgba(0,0,0,0.12)"]}
+          start={[0.5, 0]}
+          end={[0.5, 1]}
+          style={StyleSheet.absoluteFill}
+        />
+      </Animated.View>
+      {/* <Animated.View style={[styles.headerWrap, { opacity: itemsFade }]}>
         <ImageBackground
           source={{ uri: "https://picsum.photos/800/300" }}
           style={styles.drawerHeader}
@@ -170,78 +243,58 @@ function CustomDrawerContent(props: any) {
             </View>
           </View>
         </ImageBackground>
-      </Animated.View>
+      </Animated.View> */}
 
       <Animated.View
-        style={{
-          opacity: itemsFade,
-          transform: [
-            {
-              translateX: itemsFade.interpolate({
-                inputRange: [0, 1],
-                outputRange: [20, 0],
-              }),
-            },
-          ],
-        }}
+        style={[
+          styles.sidebarContainer,
+          {
+            opacity: itemsFade,
+            transform: [
+              {
+                translateX: itemsFade.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [20, 0],
+                }),
+              },
+            ],
+          },
+        ]}
       >
-        <View style={styles.menuContainer}>
-          <Animated.View
-            pointerEvents="none"
-            style={[
-              styles.activeIndicator,
-              { transform: [{ translateY: activeY }] },
-            ]}
-          />
-
-          {state.routes.map((route: any, i: number) => {
-            const focused = state.index === i;
-            const options = descriptors[route.key]?.options || {};
-            const label = options.drawerLabel ?? options.title ?? route.name;
-            const iconName = iconMap[route.name] ?? "game-controller-outline";
-
-            return (
-              <Pressable
-                key={route.key}
-                onPress={() => navigation.navigate(route.name)}
-                style={[
-                  styles.menuItem,
-                  focused ? styles.menuItemActive : null,
-                ]}
-              >
-                <Ionicons
-                  name={iconName as any}
-                  size={18}
-                  color={focused ? "#fff" : "#cbd5e1"}
-                />
-                <Text
-                  style={[
-                    styles.menuItemText,
-                    focused ? styles.menuItemTextActive : null,
-                  ]}
-                >
-                  {label}
-                </Text>
-              </Pressable>
-            );
-          })}
-        </View>
+        <Sidebar
+          style={{ flex: 1 }}
+          onNavigate={(id: string) => {
+            const navMap: Record<string, string> = {
+              dashboard: "index",
+              games: "index",
+              library: "library",
+              friends: "friends",
+              messages: "messages",
+              settings: "settings",
+              help: "help",
+            };
+            if (id === "signout") {
+              console.log("Sign out requested from sidebar");
+              return;
+            }
+            const route = navMap[id] ?? id;
+            try {
+              navigation.navigate(route);
+            } catch (e) {
+              console.warn("Navigation target missing:", route, e);
+            }
+          }}
+        />
+        {/* Debug fallback if sidebar somehow fails to mount */}
+        <Text style={styles.debugFallback}>Sidebar loaded</Text>
       </Animated.View>
 
       <View style={styles.footerContainer}>
-        <Pressable
-          style={styles.footerAction}
-          onPress={() => props.navigation.navigate("settings")}
-        >
+        <Pressable style={styles.footerAction}>
           <Ionicons name="settings-outline" size={18} color="#cbd5e1" />
           <Text style={styles.footerText}>Settings</Text>
         </Pressable>
-        <Pressable
-          style={styles.footerAction}
-          onPress={() => {
-            /* sign out flow */
-          }}
-        >
+        <Pressable style={styles.footerAction}>
           <Ionicons name="log-out-outline" size={18} color="#fecaca" />
           <Text style={[styles.footerText, { color: "#fecaca" }]}>
             Sign out
@@ -254,9 +307,8 @@ function CustomDrawerContent(props: any) {
 
 const styles = StyleSheet.create({
   drawerHeader: {
-    flex: 1,
+    height: 180,
     margin: 0,
-    // height: 180,
     width: "100%",
     justifyContent: "flex-end",
   },
@@ -284,6 +336,8 @@ const styles = StyleSheet.create({
   drawerContent: {
     paddingBottom: 24,
     backgroundColor: "transparent",
+    flexGrow: 1,
+    flex: 1,
   },
   headerWrap: {
     overflow: "hidden",
@@ -309,6 +363,10 @@ const styles = StyleSheet.create({
   },
   menuContainer: {
     paddingVertical: 12,
+    paddingHorizontal: 8,
+  },
+  menuWrapper: {
+    // hold menu in a normal flow while drawer background is absolutely positioned
     paddingHorizontal: 8,
   },
   menuItem: {
@@ -340,11 +398,35 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(124,58,237,0.12)",
   },
   footerContainer: {
-    marginTop: 18,
+    // push footer to the bottom of the drawer
+    marginTop: "auto",
     borderTopWidth: 1,
     borderTopColor: "rgba(255,255,255,0.03)",
     paddingTop: 12,
     paddingHorizontal: 12,
+  },
+  drawerBg: {
+    zIndex: -1,
+    opacity: 1,
+  },
+  bgCircleOne: {
+    position: "absolute",
+    width: 360,
+    height: 360,
+    borderRadius: 180,
+    left: -80,
+    top: -120,
+    backgroundColor: "rgba(124,58,237,0.14)",
+    shadowColor: "#7c3aed",
+  },
+  bgCircleTwo: {
+    position: "absolute",
+    width: 260,
+    height: 260,
+    borderRadius: 130,
+    right: -60,
+    bottom: -80,
+    backgroundColor: "rgba(6,182,212,0.08)",
   },
   footerAction: {
     flexDirection: "row",
@@ -376,5 +458,19 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     borderRadius: 15,
+  },
+  sidebarContainer: {
+    flex: 1,
+    paddingVertical: 8,
+    // temporary background to ensure visibility; remove if not needed
+    backgroundColor: "rgba(255,255,255,0.02)",
+    zIndex: 1,
+  },
+  debugFallback: {
+    position: "absolute",
+    bottom: 4,
+    right: 8,
+    fontSize: 10,
+    color: "#64748b",
   },
 });
