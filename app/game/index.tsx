@@ -11,6 +11,7 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import DropdownComponent from "@/components/DropdownComponent";
 import GameCard from "@/components/GameCard";
+import SectionHeader from "@/components/SectionHeader";
 import { router } from "expo-router";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import GameModal from "@/components/GenreModal";
@@ -62,20 +63,7 @@ export default function Home() {
           },
         ]}
       >
-        <View style={{ padding: 8 }}>
-          <Text style={styles.heading}>
-            {selectedGenre != null || selectedPlatform != null ? (
-              <Text style={{ textTransform: "capitalize" }}>
-                {selectedGenre?.name} {selectedPlatform?.name} Games
-              </Text>
-            ) : (
-              <>New and trending</>
-            )}
-          </Text>
-          <Text style={styles.subheading}>
-            Based on player counts and release date
-          </Text>
-        </View>
+        <SectionHeader />
 
         <View>
           <GameFilter />
@@ -123,15 +111,8 @@ const styles = StyleSheet.create({
     flex: 1,
     width: "100%",
   },
-  heading: {
-    color: "#e9d5ff",
-    fontSize: 28,
-    fontWeight: "700",
-  },
-  subheading: {
-    color: "#c7cfe2",
-    marginTop: 4,
-  },
+  heading: {},
+  subheading: {},
   filterText: {
     color: "#fff",
     fontWeight: "600",
