@@ -1,5 +1,6 @@
 import React from "react";
-import { View, Text, ImageBackground, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
+import { Image } from "expo-image";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import { Game } from "@/hooks/useGames";
 
@@ -11,20 +12,31 @@ const GameCard = ({ game }: Props) => {
   return (
     <TouchableOpacity>
       <View className="rounded-3xl overflow-hidden shadow-lg w-full ">
-        <ImageBackground
-          source={{ uri: game.background_image }}
-          className="w-full"
-          imageStyle={{ resizeMode: "cover" }}
-          style={{ height: 250, width: "100%" }}
-        >
-          <View className="flex-1 bg-black/50 justify-end">
+        <View style={{ height: 250, width: "100%" }}>
+          <Image
+            source={{ uri: game.background_image }}
+            style={{
+              position: "absolute",
+              inset: 0,
+              height: 250,
+              width: "100%",
+            }}
+            contentFit="cover"
+            cachePolicy="disk"
+            transition={200}
+            placeholder={{ blurhash: "LEHV6nWB2yk8pyo0adR*.7kCMdnj" }}
+          />
+          <View
+            className="flex-1 bg-black/50 justify-end"
+            style={{ height: "100%" }}
+          >
             <View className="p-3">
               <Text className="text-xs text-white/90">
                 {game.released
                   ? new Date(game.released).toLocaleDateString("en-US", {
-                      weekday: "short", // "Wed"
-                      day: "2-digit", // "02"
-                      year: "numeric", // "2021"
+                      weekday: "short",
+                      day: "2-digit",
+                      year: "numeric",
                     })
                   : "Unknown Date"}
               </Text>
@@ -40,13 +52,9 @@ const GameCard = ({ game }: Props) => {
                   {game.name}
                 </Text>
               </TouchableOpacity>
-              {/* <Text className="mt-2 text-sm leading-5 text-white/95">
-                Deep in the vastness of space lies a story untold—of strange
-                beings, otherworldly landscapes, and encounters that defy
-              </Text> */}
             </View>
           </View>
-        </ImageBackground>
+        </View>
       </View>
     </TouchableOpacity>
   );

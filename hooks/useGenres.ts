@@ -9,7 +9,7 @@ const useGenres = () =>
     queryKey: ["genres"],
     queryFn: apiClient.getAll,
     staleTime: 86400000,
-    // initialData: genres,
+    networkMode: "offlineFirst",
   });
 
 export default useGenres;

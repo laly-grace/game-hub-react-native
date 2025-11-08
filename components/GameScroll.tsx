@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import {
   FlatList,
   View,
@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import useGames from "@/hooks/useGames";
 import GameCard from "./GameCard";
+import { Image as ExpoImage } from "expo-image";
 
 export default function GameScroll() {
   const {
@@ -23,6 +24,35 @@ export default function GameScroll() {
 
   // Flatten paginated data into a single array
   const games = data?.pages?.flatMap((page: any) => page.results) ?? [];
+
+  // Prefetch top-N images for better offline readiness
+  const topImageUrls = useMemo(
+    () =>
+      games
+        .slice(0, 20)
+        .map((g: any) => g.background_image)
+        .filter(Boolean),
+    [games]
+  );
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        await Promise.all(
+          topImageUrls.map((u) =>
+            typeof u === "string" ? ExpoImage.prefetch(u) : Promise.resolve()
+          )
+        );
+      } catch {
+        // ignore prefetch failures
+      }
+      if (cancelled) return;
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [topImageUrls]);
 
   const onEndReachedCalledDuringMomentum = useRef(false);
 

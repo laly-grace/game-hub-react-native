@@ -37,11 +37,11 @@ const useGames = () => {
 
   return useInfiniteQuery<FetchGamesResponse<Game>>({
     queryKey: [
-      "Games",
-      selectedGenre?.name,
-      selectedPlatform?.name,
-      searchText,
-      sortOrder,
+      "games",
+      selectedGenre?.id ?? null,
+      selectedPlatform?.id ?? null,
+      searchText ?? "",
+      sortOrder ?? "",
     ],
     queryFn: ({ pageParam = 1 }) =>
       apiClient.getAll({
@@ -58,6 +58,7 @@ const useGames = () => {
       return lastPage.next ? allPages.length + 1 : undefined;
     },
     staleTime: 60 * 60 * 1000,
+    networkMode: "offlineFirst",
   });
 };
 

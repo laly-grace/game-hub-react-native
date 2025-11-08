@@ -1,21 +1,9 @@
 import React, { useEffect, useRef } from "react";
-import { Image } from "expo-image";
-import {
-  StyleSheet,
-  View,
-  Text,
-  ScrollView,
-  Pressable,
-  Animated,
-} from "react-native";
+import { StyleSheet, View, Text, Pressable, Animated } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import DropdownComponent from "@/components/DropdownComponent";
-import GameCard from "@/components/GameCard";
 import SectionHeader from "@/components/SectionHeader";
-import { router } from "expo-router";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import GameModal from "@/components/GenreModal";
-import { useState } from "react";
 import GameScroll from "@/components/GameScroll";
 import GameFilter from "@/components/GameFilter";
 import useGameStore from "@/store";

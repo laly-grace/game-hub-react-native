@@ -9,6 +9,7 @@ const usePlatforms = () =>
     queryKey: ["platforms"],
     queryFn: apiClient.getAll,
     staleTime: 86400000,
+    networkMode: "offlineFirst",
   });
 
 export default usePlatforms;
