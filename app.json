@@ -19,7 +19,8 @@
         "monochromeImage": "./assets/images/myavatar.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.lalygrace.gamehub"
     },
     "web": {
       "output": "static",
@@ -44,6 +45,13 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "00a948e2-9de3-48d6-a69d-6ca772b5ab4a"
+      }
+    },
+    "owner": "lalygrace"
   }
 }
