@@ -13,6 +13,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { BlurView } from "expo-blur";
 import useGameStore from "../store";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 interface AppHeaderProps {
   title?: string;
@@ -101,139 +102,146 @@ export default function AppHeader({
   });
 
   return (
-    <View style={styles.container}>
-      {/* Animated gradient + blur background layers */}
-      <View style={StyleSheet.absoluteFill} pointerEvents="none">
-        <LinearGradient
-          colors={["#0f172a", "#1e1b4b"]}
-          start={[0, 0]}
-          end={[1, 1]}
-          style={StyleSheet.absoluteFill}
-        />
-        <Animated.View
-          style={[
-            styles.pulseLayer,
-            {
-              opacity: bgPulse.interpolate({
-                inputRange: [0, 1],
-                outputRange: [0.15, 0.35],
-              }),
-              transform: [
-                {
-                  scale: bgPulse.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [1, 1.08],
-                  }),
-                },
-              ],
-            },
-          ]}
-        />
-        <BlurView intensity={50} tint="dark" style={StyleSheet.absoluteFill} />
-        <LinearGradient
-          colors={["rgba(255,255,255,0.04)", "rgba(0,0,0,0.2)"]}
-          start={[0.5, 0]}
-          end={[0.5, 1]}
-          style={StyleSheet.absoluteFill}
-        />
-      </View>
+    <>
+      <SafeAreaView style={{ backgroundColor: "black" }} />
+      <View style={styles.container}>
+        {/* Animated gradient + blur background layers */}
+        <View style={StyleSheet.absoluteFill} pointerEvents="none">
+          <LinearGradient
+            colors={["#0f172a", "#1e1b4b"]}
+            start={[0, 0]}
+            end={[1, 1]}
+            style={StyleSheet.absoluteFill}
+          />
+          <Animated.View
+            style={[
+              styles.pulseLayer,
+              {
+                opacity: bgPulse.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [0.15, 0.35],
+                }),
+                transform: [
+                  {
+                    scale: bgPulse.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [1, 1.08],
+                    }),
+                  },
+                ],
+              },
+            ]}
+          />
+          <BlurView
+            intensity={50}
+            tint="dark"
+            style={StyleSheet.absoluteFill}
+          />
+          <LinearGradient
+            colors={["rgba(255,255,255,0.04)", "rgba(0,0,0,0.2)"]}
+            start={[0.5, 0]}
+            end={[0.5, 1]}
+            style={StyleSheet.absoluteFill}
+          />
+        </View>
 
-      <View style={styles.leftCluster}>
-        {onToggleMenu && (
-          <Pressable
-            onPress={onToggleMenu}
-            style={styles.iconButton}
-            accessibilityLabel="Toggle menu"
-          >
-            <Ionicons name="menu" size={22} color="#e6eef8" />
-          </Pressable>
-        )}
-        {!searchOpen && (
-          <Text style={styles.title} numberOfLines={1}>
-            {title}
-          </Text>
-        )}
-      </View>
-
-      <View style={styles.centerCluster}>
-        <Animated.View
-          style={[
-            styles.searchWrap,
-            {
-              width: searchOpen ? "100%" : 0,
-              opacity: searchOpacity,
-              paddingHorizontal: searchOpen ? 12 : 0,
-            },
-          ]}
-        >
-          {searchOpen && (
-            <View style={styles.searchInner}>
-              <Ionicons
-                name="search-outline"
-                size={16}
-                color="#94a3b8"
-                style={{ marginRight: 6 }}
-              />
-              <TextInput
-                ref={inputRef}
-                value={query}
-                onChangeText={setQuery}
-                placeholder="Search games..."
-                placeholderTextColor="#64748b"
-                style={styles.searchInput}
-                returnKeyType="search"
-                onSubmitEditing={handleSubmit}
-                accessibilityLabel="Search games"
-              />
-              {query.length > 0 && (
-                <Pressable
-                  onPress={() => {
-                    setQuery("");
-                    setSearchText(undefined);
-                    if (onSearch) onSearch("");
-                  }}
-                  accessibilityLabel="Clear search"
-                  style={styles.clearBtn}
-                >
-                  <Ionicons name="close-circle" size={18} color="#64748b" />
-                </Pressable>
-              )}
-            </View>
+        <View style={styles.leftCluster}>
+          {onToggleMenu && (
+            <Pressable
+              onPress={onToggleMenu}
+              style={styles.iconButton}
+              accessibilityLabel="Toggle menu"
+            >
+              <Ionicons name="menu" size={22} color="#e6eef8" />
+            </Pressable>
           )}
-        </Animated.View>
-      </View>
+          {!searchOpen && (
+            <Text style={styles.title} numberOfLines={1}>
+              {title}
+            </Text>
+          )}
+        </View>
 
-      <View style={styles.rightCluster}>
-        <Pressable
-          style={styles.iconButton}
-          onPress={toggleSearch}
-          accessibilityLabel={searchOpen ? "Close search" : "Open search"}
-        >
-          <Ionicons
-            name={searchOpen ? "close" : "search"}
-            size={20}
-            color="#e6eef8"
-          />
-        </Pressable>
-        <Pressable
-          style={styles.iconButton}
-          onPress={onRightAction}
-          accessibilityLabel="Notifications"
-        >
-          <Ionicons name={rightActionIcon as any} size={20} color="#e6eef8" />
-        </Pressable>
-        <Pressable
-          style={styles.avatarBtn}
-          onPress={() => {}}
-          accessibilityLabel="Profile"
-        >
-          <Image
-            source={{ uri: "https://randomuser.me/api/portraits/men/10.jpg" }}
-            style={styles.avatar}
-          />
-        </Pressable>
+        <View style={styles.centerCluster}>
+          <Animated.View
+            style={[
+              styles.searchWrap,
+              {
+                width: searchOpen ? "100%" : 0,
+                opacity: searchOpacity,
+                paddingHorizontal: searchOpen ? 12 : 0,
+              },
+            ]}
+          >
+            {searchOpen && (
+              <View style={styles.searchInner}>
+                <Ionicons
+                  name="search-outline"
+                  size={16}
+                  color="#94a3b8"
+                  style={{ marginRight: 6 }}
+                />
+                <TextInput
+                  ref={inputRef}
+                  value={query}
+                  onChangeText={setQuery}
+                  placeholder="Search games..."
+                  placeholderTextColor="#64748b"
+                  style={styles.searchInput}
+                  returnKeyType="search"
+                  onSubmitEditing={handleSubmit}
+                  accessibilityLabel="Search games"
+                />
+                {query.length > 0 && (
+                  <Pressable
+                    onPress={() => {
+                      setQuery("");
+                      setSearchText(undefined);
+                      if (onSearch) onSearch("");
+                    }}
+                    accessibilityLabel="Clear search"
+                    style={styles.clearBtn}
+                  >
+                    <Ionicons name="close-circle" size={18} color="#64748b" />
+                  </Pressable>
+                )}
+              </View>
+            )}
+          </Animated.View>
+        </View>
+
+        <View style={styles.rightCluster}>
+          <Pressable
+            style={styles.iconButton}
+            onPress={toggleSearch}
+            accessibilityLabel={searchOpen ? "Close search" : "Open search"}
+          >
+            <Ionicons
+              name={searchOpen ? "close" : "search"}
+              size={20}
+              color="#e6eef8"
+            />
+          </Pressable>
+          <Pressable
+            style={styles.iconButton}
+            onPress={onRightAction}
+            accessibilityLabel="Notifications"
+          >
+            <Ionicons name={rightActionIcon as any} size={20} color="#e6eef8" />
+          </Pressable>
+          <Pressable
+            style={styles.avatarBtn}
+            onPress={() => {}}
+            accessibilityLabel="Profile"
+          >
+            <Image
+              source={{ uri: "https://randomuser.me/api/portraits/men/10.jpg" }}
+              style={styles.avatar}
+            />
+          </Pressable>
+        </View>
       </View>
-    </View>
+    </>
   );
 }
 
