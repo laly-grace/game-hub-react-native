@@ -12,6 +12,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { BlurView } from "expo-blur";
+import useGameStore from "../store";
 
 interface AppHeaderProps {
   title?: string;
@@ -33,6 +34,9 @@ export default function AppHeader({
   const [searchOpen, setSearchOpen] = useState(showSearchInitially);
   const [query, setQuery] = useState("");
   const inputRef = useRef<TextInput | null>(null);
+
+  // Wire to global store
+  const setSearchText = useGameStore((s) => s.setSearchText);
 
   const openAnim = useRef(
     new Animated.Value(showSearchInitially ? 1 : 0)
@@ -72,8 +76,19 @@ export default function AppHeader({
   };
 
   const handleSubmit = () => {
-    if (onSearch) onSearch(query.trim());
+    const trimmed = query.trim();
+    setSearchText(trimmed || undefined);
+    if (onSearch) onSearch(trimmed);
   };
+
+  // Debounce updates while typing for smoother filtering
+  useEffect(() => {
+    const trimmed = query.trim();
+    const id = setTimeout(() => {
+      setSearchText(trimmed || undefined);
+    }, 250);
+    return () => clearTimeout(id);
+  }, [query, setSearchText]);
 
   const searchWidth = openAnim.interpolate({
     inputRange: [0, 1],
@@ -172,7 +187,11 @@ export default function AppHeader({
               />
               {query.length > 0 && (
                 <Pressable
-                  onPress={() => setQuery("")}
+                  onPress={() => {
+                    setQuery("");
+                    setSearchText(undefined);
+                    if (onSearch) onSearch("");
+                  }}
                   accessibilityLabel="Clear search"
                   style={styles.clearBtn}
                 >
@@ -279,17 +298,25 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     flex: 1,
-    backgroundColor: "rgba(255,255,255,0.05)",
-    borderRadius: 14,
+    backgroundColor: "rgba(255,255,255,0.08)",
+    borderRadius: 16,
     paddingVertical: 10,
+    paddingHorizontal: 4,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.15)",
+    overflow: "hidden",
   },
   searchInput: {
     flex: 1,
-    fontSize: 14,
-    color: "#f1f5f9",
+    fontSize: 15,
+    color: "#e2e8f0",
+    paddingVertical: 0,
+    paddingRight: 6,
+    fontWeight: "500",
   },
   clearBtn: {
-    padding: 4,
+    padding: 1,
     borderRadius: 8,
+    backgroundColor: "rgba(255,255,255,0.06)",
   },
 });
