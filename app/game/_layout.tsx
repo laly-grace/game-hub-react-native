@@ -286,21 +286,8 @@ function CustomDrawerContent(props: any) {
           }}
         />
         {/* Debug fallback if sidebar somehow fails to mount */}
-        <Text style={styles.debugFallback}>Sidebar loaded</Text>
+        <Text style={styles.debugFallback}>Laly Grace</Text>
       </Animated.View>
-
-      <View style={styles.footerContainer}>
-        <Pressable style={styles.footerAction}>
-          <Ionicons name="settings-outline" size={18} color="#cbd5e1" />
-          <Text style={styles.footerText}>Settings</Text>
-        </Pressable>
-        <Pressable style={styles.footerAction}>
-          <Ionicons name="log-out-outline" size={18} color="#fecaca" />
-          <Text style={[styles.footerText, { color: "#fecaca" }]}>
-            Sign out
-          </Text>
-        </Pressable>
-      </View>
     </DrawerContentScrollView>
   );
 }
